@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: aileana-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: aileana_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aileana-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aileana-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - DB_DATABASE=aileana_db
+      - JWT_SECRET=aileana-super-secret-key-change-in-production
+      - JWT_EXPIRATION=7d
+      - ENABLE_DOCUMENTATION=true
+      - THROTTLE_TTL=60
+      - THROTTLE_LIMIT=10
+      - MONNIFY_API_KEY=mock-api-key
+      - MONNIFY_SECRET_KEY=mock-secret-key
+      - MONNIFY_CONTRACT_CODE=mock-contract-code
+      - MONNIFY_BASE_URL=https://api.monnify.com
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - aileana-network
+    command: npm run start:dev
+
+networks:
+  aileana-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

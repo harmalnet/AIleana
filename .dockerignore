@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.env.test
+.env.local
+.env.production
+tsconfig.build.tsbuildinfo
+*.log
+coverage
+.DS_Store
+.git
+.gitignore
+README.md

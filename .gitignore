@@ -8,3 +8,7 @@ tsconfig.build.tsbuildinfo
 *.log
 coverage
 .DS_Store
+
+# Credentials and sensitive files
+src/configs/credentials/*.json
+!src/configs/credentials/.gitkeep

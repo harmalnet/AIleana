@@ -96,6 +96,9 @@ export class ApiConfigService {
       subscribers: ['./dist/database/postgres/subscribers/*.subscriber.js'],
       synchronize: this.isDevelopment,
       autoLoadEntities: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     };
   }
 
